@@ -11,11 +11,11 @@ import multiprocessing as mp
 import time as tm
 import operator
 
-#plt.rc('text', usetex = True)
-#plt.rcParams['text.latex.preamble'] = [r'\usepackage[utf8]{inputenc}',
-#            r'\usepackage[russian]{babel}',
-#            r'\usepackage{amsmath}', 
-#            r'\usepackage{siunitx}']
+plt.rc('text', usetex = True)
+plt.rcParams['text.latex.preamble'] = [r'\usepackage[utf8]{inputenc}',
+            r'\usepackage[russian]{babel}',
+            r'\usepackage{amsmath}', 
+            r'\usepackage{siunitx}']
 
 def signal_construction(n, time_interval, reference_point, noise_type, noise_level, dtype='float64'):
     """
@@ -26,15 +26,16 @@ def signal_construction(n, time_interval, reference_point, noise_type, noise_lev
     ----------
     n : int
         Length of discrete signal.
-    time_interval : double
+    time_interval : float
         The time interval at which the signal is defined.
-    reference_point : double
+    reference_point : float
         The moment of signal arrival.
     noise_type : str
-        Type of noise - 'gaussian' or 'uniform'
-    noise_level : double
+        Type of noise - 'gaussian' or 'uniform'.
+    noise_level : float
         Noise level in constructed signal.
-        
+    dtype : _________
+        _____________.
     Returns
     -------
     time : array_like
@@ -77,7 +78,7 @@ def signal_construction(n, time_interval, reference_point, noise_type, noise_lev
         elif noise_type == 'gaussian':
             signal[i] = signal[i] + random.gauss(0, noise_level)
         else:
-            raise ValueError('Wrong value of noise_type: noise_type should be gaussian or uniform')
+            raise ValueError('Wrong value of noise_type: noise_type should be ''gaussian'' or ''uniform''')
 
     time, signal = np.array(time, dtype=dtype), np.array(signal, dtype=dtype)
 
@@ -92,17 +93,18 @@ def signal_construction_width(n, time_interval, reference_point, width, noise_ty
     ----------
     n : int
         Length of discrete signal.
-    time_interval : double
+    time_interval : float
         The time interval at which the signal is defined.
-    reference_point : double
+    reference_point : float
         The moment of signal arrival.
-    width : double
+    width : float
         Characteristic period of pressure drop.
     noise_type : str
         Type of noise - 'gaussian' or 'uniform'
-    noise_level : double
+    noise_level : float
         Noise level in constructed signal.
-      
+    dtype : _________
+        _____________.
     Returns
     -------
     time : array_like
@@ -271,7 +273,7 @@ def lowpassfilter(signal, thresh, level, wavelet='db4'):
     ----------
     signal : array_like
         Signal to recom.
-    thresh : double
+    thresh : float
         Threshold parameter.
     level : int
         Number of decomposition levels.
@@ -479,7 +481,7 @@ def plot_wavelet_transform(ax, time, signal, scales, waveletname='gaus1', refere
         _______________________
     waveletname : Wavelet object or name
         Wavelet to use
-    reference_point: double or None
+    reference_point: float or None
         _______________________
     rp_color: color or None
         _______________________
@@ -551,7 +553,7 @@ def maximum_of_wavelet_transform_modulus(ax, time, scale, coefficients, referenc
         Test signal.
     scale : array_like
         Scale grid on which the wavelet transform is set
-    reference_point: double or None
+    reference_point: float or None
         _______________________
     rp_color: color or None
         _______________________
@@ -609,9 +611,9 @@ def gutter_method(time, scale, power, interval_mode='auto', lower_scale=None, up
         Mode for searching the value of reference point - 'window' or 'average'
     interval_mode: str
         Mode for interval definition - 'auto' or 'bound'
-    lower_scale: double
+    lower_scale: float
         Lower bound of scale parameter in 'bound' interval_mode
-    upper_scale: double
+    upper_scale: float
         Upper bound of scale parameter in 'bound' interval_mode
     """
     time, scale, power = np.array(time, dtype=dtype), np.array(scale, dtype=dtype), np.array(power, dtype=dtype)
