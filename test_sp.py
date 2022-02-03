@@ -1,10 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
-from scipy.optimize.nonlin import nonlin_solve
-from scipy.optimize import curve_fit
-import time as tm
-
 
 import os,sys,inspect
 
