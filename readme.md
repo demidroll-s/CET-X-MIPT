@@ -2,7 +2,7 @@
 
 В данном репозитории представлен проект, выполненный в рамках стажировки от Инжинирингового центра МФТИ по трудноизвлекаемым полезным ископаемым (отдел CET-X МФТИ).
 
-![logo](logo.png)
+![logo](https://www.google.com/url?sa=i&url=https%3A%2F%2Fintegral-russia.ru%2F2021%2F10%2F26%2Finzhiniringovyj-tsentr-mfti-its-mfti%2F&psig=AOvVaw1nM2HmPEFVdenCIJ3FbCMA&ust=1643981904600000&source=images&cd=vfe&ved=0CAsQjRxqFwoTCJDwwP3T4_UCFQAAAAAdAAAAABAD)
 
 ## Применение вейвлет-анализа в задаче локализации утечек в трубопроводе
 
