@@ -53,5 +53,7 @@ II. Вторая часть
 
 6. **Gutter search**
 
-Для более детального изучения проекта можно обратиться к презентации проекта.
+![Gutter search](Results/gutter_method.png)
+
+Для более детального изучения проекта можно обратиться к [презентации проекта](https://github.com/demidroll-s/CET-X-MIPT/blob/main/Presentation.pdf/).
 
