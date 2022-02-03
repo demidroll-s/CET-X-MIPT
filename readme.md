@@ -26,14 +26,14 @@ NPW метод обладает очевидными преимуществам�
 
 1. **Конструкция сигнала, регистрируемого датчиком**
 
-![Signal](Results/signal.png)
+![Signal](Results/signal.png#gh-dark-mode-only)
 
 2. **Декомпозиция сигнала**
 
-![Signal](Results/decomposition.png)
+![Signal](Results/decomposition.png#gh-dark-mode-only)
 
 3. **Фильтрация сигнала с помощью threshold-tecnique**
 
-![Signal](Results/lowpassfilter_2.png)
+![Signal](Results/lowpassfilter_2.png#gh-dark-mode-only)
 
 

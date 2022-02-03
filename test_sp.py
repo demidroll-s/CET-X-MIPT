@@ -29,7 +29,7 @@ plt.savefig('Results/signal.png', dpi=300)
 
 level = 4
 wavelet = 'db4'
-fig, axarr = plt.subplots(nrows=level, ncols=2, figsize=(16,16), dpi=300)
+fig, axarr = plt.subplots(nrows=level, ncols=2, figsize=(10,10), dpi=300)
 sp.plot_decomposition(axarr, signal, level, wavelet)
 
 plt.savefig('Results/decomposition.png', dpi=300)
