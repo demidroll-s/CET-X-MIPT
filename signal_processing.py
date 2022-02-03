@@ -458,13 +458,12 @@ def maximum_of_wavelet_transform_modulus(ax, time, scale, coefficients, referenc
 
     ax.legend(fontsize=legend_size, loc='upper right')
 
-def gutter_method(time, scale, power, interval_mode='auto', lower_scale=None, upper_scale=None, search_mode='window', optimal_variance=None, dtype='float64'):
+def gutter_method(time, scale, power, interval_mode='auto', lower_scale=None, upper_scale=None, search_mode='window', optimal_variance=0.1, dtype='float64'):
     """
     Find the value of reference point using the gutter method 
 
     Parameters
     ----------
-    
     time : array_like
         Time grid on which discrete signal is defined.
     scale : array_like
@@ -492,13 +491,7 @@ def gutter_method(time, scale, power, interval_mode='auto', lower_scale=None, up
         raise TypeError('scale is not one-dimensional array')
     if power.ndim != 2:
         raise TypeError('power is not two-dimensional array')
-
-    #if power.shape[0] != scale.shape:
-    #    print(power.shape[0], scale.shape)
-    #    raise ValueError('power and scale lengths do not match')
-    #if power.shape[1] != time.shape:
-    #    raise ValueError('power and time lengths do not match')   
- 
+  
     if interval_mode != 'auto' and interval_mode != 'bound':
         raise ValueError('Wrong value of interval_mode: interval_mode should be `auto` or `bound`')
 
@@ -521,7 +514,8 @@ def gutter_method(time, scale, power, interval_mode='auto', lower_scale=None, up
                 variance = variance + (average - np.argmin(power[i][0:int(len(time)) // 2]))**2/in_interval
                 variance = 2 * np.sqrt(variance) * (time[1] - time[0])
 
-        if variance < optimal_variance:
+        dt = time[1] - time[0]
+        if variance < optimal_variance * (time[-1] - time[0] + dt):
             rp_exp = time[index_rp_exp]
             return rp_exp, variance
         else:
@@ -544,8 +538,6 @@ def gutter_method(time, scale, power, interval_mode='auto', lower_scale=None, up
 
     else:
         raise ValueError('Wrong value of search_mode: search_mode should be `average` or `window`')
-
-        
 
 def gutter_method_rectangle_plot(ax, gutter_result, lower_scale, upper_scale):
     reference_point_exp, variance = gutter_result

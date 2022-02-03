@@ -74,7 +74,7 @@ scales = np.arange(1, 512, 1.0)
 
 time, scale, coefficients = sp.plot_wavelet_transform(top_ax, bottom_ax, time, signal, scales, waveletname='gaus1', reference_point=reference_point, rp_color=None, legend_size='large')
 
-gutter_result = sp.gutter_method(time, scale, power=abs(coefficients), lower_scale=1.0, upper_scale=2.0)
+gutter_result = sp.gutter_method(time, scale, power=abs(coefficients), interval_mode='bound', lower_scale=1.0, upper_scale=2.0, search_mode='average', optimal_variance=0.2)
 (reference_point_exp, variance) = gutter_result
 
 distance = 0.004
