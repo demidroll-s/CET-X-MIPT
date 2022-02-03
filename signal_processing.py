@@ -34,8 +34,8 @@ def signal_construction(n, time_interval, reference_point, noise_type, noise_lev
         Type of noise - 'gaussian' or 'uniform'.
     noise_level : float
         Noise level in constructed signal.
-    dtype : _________
-        _____________.
+    dtype : data type, optional
+        The desired data-type for the array. If not given, then the type will be float64.
     Returns
     -------
     time : array_like
@@ -60,7 +60,7 @@ def signal_construction(n, time_interval, reference_point, noise_type, noise_lev
     if not isinstance(reference_point, float):
         raise TypeError('reference_point should be float')
     if reference_point < 0.0 or reference_point > time_interval:
-        raise ValueError('Wrong value of t_0: t_0 should be higher than 0.0 and lower than time_interval')
+        raise ValueError('Wrong value of reference_point: reference_point should be higher than 0.0 and lower than time_interval')
 
     if not isinstance(noise_level, float):
         raise TypeError('noise_level should be float')
@@ -72,6 +72,7 @@ def signal_construction(n, time_interval, reference_point, noise_type, noise_lev
             signal[i] = 1.0
         else:
             signal[i] = 0.0
+        
     for i in range(len(signal)):
         if noise_type == 'uniform':
             signal[i] = signal[i] + noise_level * (2 * random.random() - 1)
@@ -103,8 +104,8 @@ def signal_construction_width(n, time_interval, reference_point, width, noise_ty
         Type of noise - 'gaussian' or 'uniform'
     noise_level : float
         Noise level in constructed signal.
-    dtype : _________
-        _____________.
+    dtype : data type, optional
+        The desired data-type for the array. If not given, then the type will be float64.
     Returns
     -------
     time : array_like
@@ -153,6 +154,7 @@ def signal_construction_width(n, time_interval, reference_point, width, noise_ty
                 signal[i] = 0.0
             else:
                 signal[i] = 1.0 - (time[i] - reference_point) / width
+
     for i in range(len(signal)):
         if noise_type == 'uniform':
             signal[i] = signal[i] + noise_level * (2 * random.random() - 1)
