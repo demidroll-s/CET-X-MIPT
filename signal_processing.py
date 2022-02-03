@@ -54,8 +54,8 @@ def signal_construction(n, time_interval, reference_point, noise_type, noise_lev
         raise ValueError('Wrong value of time_interval: time_interval should be higher than 0')
     
     time_step = time_interval / n 
-    time = [i * time_step for i in range(n + 1)]
-    signal = [0.0 for _ in range(n + 1)]
+    time = [i * time_step for i in range(n)]
+    signal = [0.0 for _ in range(n)]
 
     if not isinstance(reference_point, float):
         raise TypeError('reference_point should be float')
@@ -179,7 +179,7 @@ def plot_signal(ax, time, signal, plot_color='red', plot_alpha=1.0, plot_label='
         Time grid on which discrete signal is defined.
     signal : array_like
         Constructed signal.
-    .......
+    parameters : optional
     """
     time, signal = np.array(time, dtype=dtype), np.array(signal, dtype=dtype)
     if time.ndim != 1:
@@ -194,8 +194,8 @@ def plot_signal(ax, time, signal, plot_color='red', plot_alpha=1.0, plot_label='
     if reference_point != None:
         if not isinstance(reference_point, float):
             raise TypeError('reference_point should be float')
-        if reference_point < 0.0 or reference_point > time[-1]:
-            raise ValueError('Wrong value of reference_point: reference_point should be higher than 0.0 and lower than time_interval')
+        if reference_point < time[0] or reference_point > time[-1]:
+            raise ValueError('Wrong value of reference_point: reference_point should be in time_interval')
         ax.axvline(x=reference_point, linestyle='dashed', color=rp_color, label=r'reference point')
 
     ax.set_xlim([time[0], time[-1]])
@@ -247,26 +247,6 @@ def plot_decomposition(axarr, signal, level, wavelet='db4', approximate_color='p
             axarr[i, 1].set_title(r'Detail coefficients', fontsize=14)
     plt.tight_layout()
 
-def test_threshold(ax, n, thresh):
-    num = np.linspace(0, n-1, n)
-    up_level=[thresh for i in range(n)]
-    down_level=[-thresh for i in range(n)]
-    sequence = [2 * random.random() - 1 for i in range(n)]
-    sequence_soft = pywt.threshold(sequence, value=thresh, mode='soft')
-    sequence_hard = pywt.threshold(sequence, value=thresh, mode='hard')
-    
-    ax.plot(num, sequence, label=r'sequence before threshold procedure', color='maroon', alpha=1.0)
-    ax.plot(num, sequence_soft, label=r'soft mode', color='fuchsia', alpha=1.0)
-    ax.plot(num, sequence_hard, label=r'hard mode', color='orange', alpha=1.0)
-    ax.plot(num, up_level, ls='dashed', color='gray')
-    ax.plot(num, down_level, ls='dashed', color='gray')
-    ax.set_xlabel(r'$n$', fontsize=20)
-    plt.xlabel(r'Test sequence', fontsize=20)
-    plt.ylabel(r'Sequence after threshold', fontsize=20)
-    plt.xticks(color='k', size=16)
-    plt.yticks(color='k', size=16)
-    plt.legend(fontsize='large')
-
 def lowpassfilter(signal, thresh, level, wavelet='db4'):
     """
     Signal reconstruction using DWT noise removing techique.
@@ -275,7 +255,7 @@ def lowpassfilter(signal, thresh, level, wavelet='db4'):
     ----------
     signal : array_like
         Signal to recom.
-    thresh : float
+    thresh : double
         Threshold parameter.
     level : int
         Number of decomposition levels.
@@ -284,7 +264,7 @@ def lowpassfilter(signal, thresh, level, wavelet='db4'):
     """
     thresh = thresh * np.nanmax(signal)
     coeff = pywt.wavedec(signal, wavelet, mode='symmetric', level=level)
-    coeff[1:] = (pywt.threshold(i, value=thresh, mode='soft') for i in coeff[1:])
+    coeff[1:] = (pywt.threshold(i, value=thresh, mode="soft") for i in coeff[1:])
     reconstructed_signal = pywt.waverec(coeff, wavelet, mode='sym')
     return reconstructed_signal
 
