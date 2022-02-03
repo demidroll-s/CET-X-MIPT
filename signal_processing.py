@@ -194,8 +194,8 @@ def plot_signal(ax, time, signal, plot_color='red', plot_alpha=1.0, plot_label='
         ax.axvline(x=reference_point, linestyle='dashed', color=rp_color, label=r'reference point')
 
     ax.set_xlim([time[0], time[-1]])
-    plt.xticks(color='k', size = 18)
-    plt.yticks(color='k', size = 18)
+    plt.xticks(color='k', size=18)
+    plt.yticks(color='k', size=18)
     ax.set_xlabel(r'Time $t$, s', fontsize=20)
     ax.set_ylabel(r'Amplitude', fontsize=20)
     ax.set_title(r'Signal', fontsize=20)
@@ -265,7 +265,7 @@ def lowpassfilter(signal, thresh, level=4, wavelet='db4'):
     """
     Необходимо сделать проверку вейвлета
     """
-    
+
     thresh = thresh * np.nanmax(signal)
     coeff = pywt.wavedec(signal, wavelet, mode='symmetric', level=level)
     coeff[1:] = (pywt.threshold(i, value=thresh, mode="soft") for i in coeff[1:])
@@ -273,6 +273,31 @@ def lowpassfilter(signal, thresh, level=4, wavelet='db4'):
     return reconstructed_signal
 
 def wavelet_transform(time, signal, scales, waveletname='gaus1', dtype='float64'):
+    """
+    Compute continuous wavelet-transform of input signal
+
+    Parameters
+    ----------
+    time : array_like
+        Time grid on which discrete signal is defined.
+    signal : array_like
+        Input signal.
+    scales : array_like
+        The wavelet scales to use.
+    waveletname : Wavelet object or name
+        Wavelet to use.
+    dtype : data type, optional
+        The desired data-type for the array. If not given, then the type will be float64.
+    Returns
+    -------
+    time : array_like
+        Time grid on which discrete signal is defined.
+    scales : array_like
+        The wavelet scales on which cwt was calculated.
+    coefficients : array_like
+        Coefficients of continuous wavelet transform of input signal.
+
+    """
     time, signal = np.array(time, dtype=dtype), np.array(signal, dtype=dtype)
     if time.ndim != 1:
         raise TypeError('time is not one-dimensional array')
@@ -296,26 +321,29 @@ def wavelet_transform(time, signal, scales, waveletname='gaus1', dtype='float64'
 
     return [time, scale, coefficients]
 
-def plot_wavelet_transform(ax, time, signal, scales, waveletname='gaus1', reference_point=None, rp_color=None, legend_size='large', dtype='float64'):
+def plot_wavelet_transform(ax_signal, ax_cwt, time, signal, scales, waveletname='gaus1', reference_point=None, rp_color=None, legend_size='large', dtype='float64'):
     """
     Plot wavelet-transform diagram of input signal
 
     Parameters
     ----------
-    ax : ___
-        _______________________
+    ax_signal : matplotlib.axes class
+        Variable of matplotlib Axes class, referring to the plot for signal.
+    ax_cwt : matplotlib.axes class
+        Variable of matplotlib Axes class, referring to the diagram of CWT.
     time : array_like
         Time grid on which discrete signal is defined.
     signal : array_like
         Test signal.
     scales : array_like
-        _______________________
+        The wavelet scales to use.
     waveletname : Wavelet object or name
         Wavelet to use
-    reference_point: float or None
-        _______________________
-    rp_color: color or None
-        _______________________
+    reference_point : float
+        The moment of signal arrival.
+    dtype : data type, optional
+        The desired data-type for the array. If not given, then the type will be float64.
+    parameters : optional
     """
     time, signal = np.array(time, dtype=dtype), np.array(signal, dtype=dtype)
     if time.ndim != 1:
@@ -339,34 +367,41 @@ def plot_wavelet_transform(ax, time, signal, scales, waveletname='gaus1', refere
     scale = 1.0 / frequencies
     contourlevels = np.arange(-4.0, 4.0, 0.5)
 
-    im = ax.contourf(time, np.log2(scale), np.log2(power), contourlevels, extend='both')
+    im = ax_cwt.contourf(time, np.log2(scale), np.log2(power), contourlevels, extend='both')
     
-    #plt.xticks(color='k', size=18)
-    #plt.yticks(color='k', size=18)
-    ax.set_xlabel(r'Time $t$, s', fontsize=20)
-    ax.set_ylabel(r'Scale $s$', fontsize=20)
-    ax.set_title(r'Wavelet Transform (Power Spectrum) of signal', fontsize=20)
+    plt.xticks(color='k', size=18)
+    plt.yticks(color='k', size=18)
+    ax_cwt.set_xlabel(r'Time $t$, s', fontsize=20)
+    ax_cwt.set_ylabel(r'Scale $s$', fontsize=20)
+    ax_cwt.set_title(r'Wavelet Transform (Power Spectrum) of signal', fontsize=20)
     
-    ax.axvline(x=reference_point, linestyle='dashed', color=rp_color, label=r'reference point')
+    ax_cwt.axvline(x=reference_point, linestyle='dashed', color=rp_color, label='reference point')
 
-    #left, bottom, width, height = (0.22, np.log2(1.0), 0.06, 1.0)
-    #rect = plt.Rectangle((left, bottom), width, height, fill=None, edgecolor='red', linewidth=2.0)
-    #ax.add_patch(rect)
-
-    ax.set_xlim([time[0], time[-1]])
+    ax_cwt.set_xlim([time[0], time[-1]])
     yticks = 2**np.arange(np.ceil(np.log2(scale.min())), np.ceil(np.log2(scale.max())))
-    ax.set_yticks(np.log2(yticks))
-    ax.set_yticklabels(yticks)
-    ax.invert_yaxis()
-    ylim = ax.get_ylim()
-    ax.set_ylim(ylim[0], -5)
+    ax_cwt.set_yticks(np.log2(yticks))
+    ax_cwt.set_yticklabels(yticks)
+    ax_cwt.invert_yaxis()
+    ylim = ax_cwt.get_ylim()
+    ax_cwt.set_ylim(ylim[0], -5)
     
-    divider = make_axes_locatable(ax)
+    divider = make_axes_locatable(ax_cwt)
     cax = divider.append_axes('right', size='5%', pad=0.05)
     plt.colorbar(im, cax=cax, orientation='vertical')
     plt.tight_layout()
 
-    ax.legend(fontsize=legend_size, loc='upper right')
+    ax_cwt.legend(fontsize=legend_size)
+
+    ax = [ax_signal, ax_cwt]
+
+    for tick in ax[0].xaxis.get_major_ticks():
+        tick.label.set_fontsize(18)
+    for tick in ax[0].yaxis.get_major_ticks():
+        tick.label.set_fontsize(18)
+    for tick in ax[1].xaxis.get_major_ticks():
+        tick.label.set_fontsize(18)
+    for tick in ax[1].yaxis.get_major_ticks():
+        tick.label.set_fontsize(18)
 
     return [time, scale, coefficients]
 
@@ -376,8 +411,8 @@ def maximum_of_wavelet_transform_modulus(ax, time, scale, coefficients, referenc
 
     Parameters
     ----------
-    ax : ___
-        _______________________
+    ax : matplotlib.axes class
+        Variable of matplotlib Axes class, referring to the plot for signal.
     time : array_like
         Time grid on which discrete signal is defined.
     signal : array_like

@@ -1,8 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
 from scipy.optimize.nonlin import nonlin_solve
 from scipy.optimize import curve_fit
 import time as tm
+
 
 import os,sys,inspect
 
@@ -48,4 +50,14 @@ sp.plot_signal(ax, time, rec_signal1, plot_color='green', plot_alpha=0.5, plot_l
 sp.plot_signal(ax, time, rec_signal2, plot_color='blue', plot_alpha=1.0, plot_label='reconstructed signal, $\sigma = ' + '{:.2f}'.format(thresh2)  + '$', reference_point=0.5, rp_color=None)
 plt.savefig('Results/lowpassfilter_2.png', dpi=300)
 
+fig = plt.figure(figsize=(12 ,12), dpi=300)
+spec = gridspec.GridSpec(ncols=20, nrows=8)
+top_ax = fig.add_subplot(spec[0:2, 0:18])
+bottom_ax = fig.add_subplot(spec[2:, 0:19])
 
+sp.plot_signal(top_ax, time, signal, plot_color='red', plot_alpha=0.7, plot_label='signal', reference_point=reference_point, legend_size='large')
+
+scales = np.arange(1, 512, 1.0)
+
+time, scale, coefficients = sp.plot_wavelet_transform(top_ax, bottom_ax, time, signal, scales, waveletname='gaus2', reference_point=reference_point, rp_color=None, legend_size='large')
+plt.savefig('Results/wavelet_transform.png', dpi=300)
