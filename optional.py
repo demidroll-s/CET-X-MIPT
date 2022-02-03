@@ -184,3 +184,27 @@ def test_MDF(m, n, noise_type, noise_level, thresh, level, wavelet, eps):
         if delta < eps:
             k = k + 1
     return k/m
+
+def test_gutter_method(m, n, max_noise_level, n_noise_level, optimal_delta):
+    reference_point = np.random.random() * 0.1
+    scales = np.arange(1, 512, 1.0)
+
+    d_nl = max_noise_level / n_noise_level
+
+    noise_level = [0 for i in range(n_noise_level)]
+    test_result = [0 for i in range(n_noise_level)]
+    for i in range(len(noise_level)):
+        noise_level[i] = (i + 1) * d_nl
+        for j in range(m):
+            time, signal = sp.signal_construction(n, reference_point, noise_type='gaussian', noise_level=noise_level[i])
+            thresh = noise_level[i]
+            level = 4
+            rec_signal = sp.lowpassfilter(signal, thresh, level)
+
+            time, scale, coefficients = sp.wavelet_transform(time, rec_signal, scales, waveletname='gaus1')
+            reference_point_exp, variance = sp.gutter_method(time, scale, power=abs(coefficients), lower_scale=1.0, upper_scale=2.0)
+            delta = abs(reference_point - reference_point_exp)
+            if delta < optimal_delta:
+                test_result[i] += 1/m
+        print(i, 'Finished!')
+    return [noise_level, test_result]

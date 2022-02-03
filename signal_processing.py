@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 import pywt
+import operator
 
 plt.rc('text', usetex = True)
 plt.rcParams['text.latex.preamble'] = [r'\usepackage[utf8]{inputenc}',
@@ -419,11 +420,9 @@ def maximum_of_wavelet_transform_modulus(ax, time, scale, coefficients, referenc
         Test signal.
     scale : array_like
         Scale grid on which the wavelet transform is set
-    reference_point: float or None
-        _______________________
-    rp_color: color or None
-        _______________________
-    
+    reference_point : float
+        The moment of signal arrival.
+    parameters : optional
     """
 
     def find_local_max(sequence):
@@ -456,7 +455,7 @@ def maximum_of_wavelet_transform_modulus(ax, time, scale, coefficients, referenc
     ax.invert_yaxis()
     ylim = ax.get_ylim()
     ax.set_ylim(0.585, -5)
-    
+
     ax.legend(fontsize=legend_size, loc='upper right')
 
 def gutter_method(time, scale, power, interval_mode='auto', lower_scale=None, upper_scale=None, search_mode='window', optimal_variance=None, dtype='float64'):
@@ -473,14 +472,18 @@ def gutter_method(time, scale, power, interval_mode='auto', lower_scale=None, up
     power : array_like
         Modulus of coefficients of continious wavelet transform calculated on
         time and scale grids.
-    search_mode : str
-        Mode for searching the value of reference point - 'window' or 'average'
     interval_mode: str
         Mode for interval definition - 'auto' or 'bound'
     lower_scale: float
         Lower bound of scale parameter in 'bound' interval_mode
     upper_scale: float
         Upper bound of scale parameter in 'bound' interval_mode
+    search_mode : str
+        Mode for searching the value of reference point - 'window' or 'average'
+    optimal_variance : float
+        ____________________
+    dtype : data type, optional
+        The desired data-type for the array. If not given, then the type will be float64.
     """
     time, scale, power = np.array(time, dtype=dtype), np.array(scale, dtype=dtype), np.array(power, dtype=dtype)
     if time.ndim != 1:
@@ -542,26 +545,10 @@ def gutter_method(time, scale, power, interval_mode='auto', lower_scale=None, up
     else:
         raise ValueError('Wrong value of search_mode: search_mode should be `average` or `window`')
 
-def test_gutter_method(m, n, max_noise_level, n_noise_level, optimal_delta):
-    reference_point = np.random.random() * 0.1
-    scales = np.arange(1, 512, 1.0)
+        
 
-    d_nl = max_noise_level / n_noise_level
-
-    noise_level = [0 for i in range(n_noise_level)]
-    test_result = [0 for i in range(n_noise_level)]
-    for i in range(len(noise_level)):
-        noise_level[i] = (i + 1) * d_nl
-        for j in range(m):
-            time, signal = signal_construction(n, reference_point, noise_type='gaussian', noise_level=noise_level[i])
-            thresh = noise_level[i]
-            level = 4
-            rec_signal = lowpassfilter(signal, thresh, level)
-
-            time, scale, coefficients = wavelet_transform(time, rec_signal, scales, waveletname='gaus1')
-            reference_point_exp, variance = gutter_method(time, scale, power=abs(coefficients), lower_scale=1.0, upper_scale=2.0)
-            delta = abs(reference_point - reference_point_exp)
-            if delta < optimal_delta:
-                test_result[i] += 1/m
-        print(i, 'Finished!')
-    return [noise_level, test_result]
+def gutter_method_rectangle_plot(ax, gutter_result, lower_scale, upper_scale):
+    reference_point_exp, variance = gutter_result
+    left, bottom, width, height = (reference_point_exp / 2 - variance / 2, np.log2(lower_scale), variance, upper_scale - lower_scale)
+    rect = plt.Rectangle((left, bottom), width, height, fill=None, edgecolor='red', linewidth=1.0)
+    ax.add_patch(rect)
