@@ -1,14 +1,13 @@
 import model as md
 import numpy as np
 import matplotlib.pyplot as plt
-from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
-#plt.rc('text', usetex = True)
-#plt.rcParams['text.latex.preamble'] = [r'\usepackage[utf8]{inputenc}',
-#            r'\usepackage[russian]{babel}',
-#            r'\usepackage{amsmath}', 
-#            r'\usepackage{siunitx}']
+plt.rc('text', usetex = True)
+plt.rcParams['text.latex.preamble'] = [r'\usepackage[utf8]{inputenc}',
+            r'\usepackage[russian]{babel}',
+            r'\usepackage{amsmath}', 
+            r'\usepackage{siunitx}']
 
 c = 1403
 p_0 = 50.0
@@ -42,5 +41,5 @@ def plot_result(t, x, magnitude, title, save_filename):
      plt.savefig(save_filename, dpi=300)
 
 contourlevels = np.arange(0, 1.0, 0.05)
-plot_result(t, x, pressure, r'Pressure $p$, atm', 'pressure-analytical.png')
-plot_result(t, x, velocity, r'Velocity $w$, m/s', 'velocity-analytical.png')
+plot_result(t, x, pressure, r'Pressure $p$, atm', 'Results/Computational model/pressure-analytical.png')
+plot_result(t, x, velocity, r'Velocity $w$, m/s', 'Results/Computational model/velocity-analytical.png')

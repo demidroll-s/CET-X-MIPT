@@ -47,3 +47,5 @@ fig, ax = plt.subplots(figsize=(16,8), dpi=300)
 sp.plot_signal(ax, time, rec_signal1, plot_color='green', plot_alpha=0.5, plot_label='reconstructed signal, $\sigma = ' + '{:.2f}'.format(thresh1)  + '$')
 sp.plot_signal(ax, time, rec_signal2, plot_color='blue', plot_alpha=1.0, plot_label='reconstructed signal, $\sigma = ' + '{:.2f}'.format(thresh2)  + '$', reference_point=0.5, rp_color=None)
 plt.savefig('Results/lowpassfilter_2.png', dpi=300)
+
+
